@@ -14,7 +14,7 @@ const checkAllProduct = async() =>{
     throw error;}
 }
 
-const getOrderByList = async(start, pageSize, cate, orderBy) =>{
+const getProductsByFilter = async(start, pageSize, cate, orderBy) =>{
     
     const queryRunner = appDataSource.createQueryRunner();
       await queryRunner.connect();
@@ -52,7 +52,7 @@ const getOrderByList = async(start, pageSize, cate, orderBy) =>{
         return [list, listCount];}
        
         catch (err) {
-          await queryRunner.rollbackTransactrsion()
+          await queryRunner.rollbackTransaction()
       } finally {
           await queryRunner.release()
 }}
@@ -99,4 +99,4 @@ const getProduct = async(id) =>{
         throw error;}
 }
 
-module.exports = {checkAllProduct, getProductList, getOrderByList, getProduct}
+module.exports = {checkAllProduct, getProductList, getProductsByFilter, getProduct}

@@ -191,7 +191,7 @@ const myReviewList = async (start, pageSize, productId, userId) => {
 
     return [reviewList, reviewCount];
   } catch (err) {
-    await queryRunner.rollbackTransactrsion();
+    await queryRunner.rollbackTransaction();
   } finally {
     await queryRunner.release();
   }
@@ -208,3 +208,4 @@ module.exports = {
   reviewList,
   myReviewList
 };
+``

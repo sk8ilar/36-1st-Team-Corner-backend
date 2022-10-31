@@ -14,7 +14,7 @@ const productList = async (page, pageSize, cate, orderBy) => {
         } else {
         start = (page - 1) * pageSize;
       }
-    const getOrderByList = await productDao.getOrderByList(start, pageSize, cate, orderBy)
+    const getOrderByList = await productDao.getProductsByFilter(start, pageSize, cate, orderBy)
       
     return getOrderByList
     }
