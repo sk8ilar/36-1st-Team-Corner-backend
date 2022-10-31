@@ -32,23 +32,64 @@
 - ERD 모델링
 - 회원가입 API (POST)
   - 정규표현식을 이용하여 email, password 유효성 검사를 하여 기능을 구현
+  - 예를들어 password의 경우 영어 대소문자와 숫자를 포함한 6자리에서 16자리 이하의 자릿수를 토대로 유효성 검사 진행
 - 로그인 API (POST)
   - jwt 발급
 - 상품 조회 API (GET)
   - query parameter를 통하여 다양한 필터링 조건을 걸어 조회
+  - 쿼리 트랜잭션을 이용하여 API에 요청을 보낼때마다 총 상품의 개수와 해당 페이지 상품의 정보를 동시에 보여줄 수 있게 작성
 - 장바구니 API (GET/ DELETE/ PATCH)
 
-### 이지현
-- ERD 모델링
-- BULK INSERT
-- 리뷰 API (GET/ POST/ DELETE/ PATCH)
-  - transaction을 이용한 pagination 구현
-- 장바구니 담기 (상세페이지) API (POST)
-  - 기존 데이터 베이스 검사를 통하여 추가로 담기 기능 구현
+<hr/>
+
+## &#127919; 문제 해결 경험(내가 구현한 기능중)
+- 메인페이나 카테고리 페이지에서 상품 정보를 페이지네이션해서 보여주기
+  - 쿼리 파라미터와 쿼리 트랜잭션을 통해 
+  - ```const getProductsByFilter = async(start, pageSize, cate, orderBy) =>{
+    
+    const queryRunner = appDataSource.createQueryRunner();
+      await queryRunner.connect();
+      await queryRunner.startTransaction()
+    
+    try{ 
+        if(!cate){cate = null}
+        if(!orderBy){orderBy = null}
+        
+        const list = await queryRunner.query(
+        `SELECT 
+            id,
+            name,
+            price,
+            detail,
+            thumbnail_image_url,
+            stock,
+            category_id
+        FROM products p 
+        WHERE 
+            CASE WHEN ${cate} IS NULL THEN p.category_id IS NOT NULL 
+        WHEN ${cate} IS NOT NULL THEN p.category_id = ${cate} END
+        ORDER BY 
+            CASE WHEN ${orderBy} IS NULL THEN p.id 
+            WHEN ${orderBy} IS NOT NULL THEN PRICE END
+        LIMIT ${start},${pageSize}
+        `
+            ,)
+        const listCount = await queryRunner.query(
+            `SELECT count(*) 
+            as count
+            FROM products`
+          );
+        await queryRunner.commitTransaction()
+        return [list, listCount];}
+       
+        catch (err) {
+          await queryRunner.rollbackTransaction()
+      } finally {
+          await queryRunner.release()}}
 
 <br/>
 
-## 프로젝트 하면서 집중했던 것
+## &#127919; 프로젝트 하면서 집중했던 것
 - Endpoint RESTful 하게 짜기
 - 프로젝트 초기 데이터 모델링
   
