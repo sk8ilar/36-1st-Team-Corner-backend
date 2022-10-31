@@ -45,7 +45,8 @@
 ## &#127919; 문제 해결 경험(내가 구현한 기능중)
 - 메인페이나 카테고리 페이지에서 상품 정보를 페이지네이션해서 보여주기
   - 쿼리 파라미터와 쿼리 트랜잭션을 통해 
-  - ```const getProductsByFilter = async(start, pageSize, cate, orderBy) =>{
+  - ``` 
+    const getProductsByFilter = async(start, pageSize, cate, orderBy) =>{
     
     const queryRunner = appDataSource.createQueryRunner();
       await queryRunner.connect();
